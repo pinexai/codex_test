@@ -1,23 +1,25 @@
 from flask import Flask, request, jsonify, send_from_directory
-import sqlite3
+from sqlalchemy import create_engine, text
+import os
 
 app = Flask(__name__, static_folder='static', static_url_path='/')
-DB_PATH = 'jobs.db'
+DB_URL = os.environ.get('JOB_DB_URL', 'sqlite:///jobs.db')
+engine = create_engine(DB_URL, echo=False)
 
 
 def get_jobs(search=None):
-    conn = sqlite3.connect(DB_PATH)
-    c = conn.cursor()
+    query = text('SELECT company, title, location, link FROM jobs')
+    params = {}
     if search:
-        like = f"%{search}%"
-        c.execute('''SELECT company, title, location, link FROM jobs
-                     WHERE company LIKE ? OR title LIKE ?
-                     ORDER BY timestamp DESC''', (like, like))
+        query = text('''SELECT company, title, location, link FROM jobs
+                        WHERE company LIKE :q OR title LIKE :q
+                        ORDER BY timestamp DESC''')
+        params['q'] = f'%{search}%'
     else:
-        c.execute('SELECT company, title, location, link FROM jobs ORDER BY timestamp DESC')
-    jobs = [dict(company=row[0], title=row[1], location=row[2], link=row[3]) for row in c.fetchall()]
-    conn.close()
-    return jobs
+        query = text('SELECT company, title, location, link FROM jobs ORDER BY timestamp DESC')
+    with engine.connect() as conn:
+        rows = conn.execute(query, params).fetchall()
+    return [dict(company=r[0], title=r[1], location=r[2], link=r[3]) for r in rows]
 
 
 @app.route('/')
