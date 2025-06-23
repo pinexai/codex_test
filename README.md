@@ -1,8 +1,6 @@
 # Job Aggregator
 
-This project provides a small but extensible job aggregator that scrapes job
-listings from known career pages and exposes them through a REST API. Jobs are
-persisted using SQLAlchemy so any database supported by the library can be used.
+This project provides a small but extensible job aggregator that scrapes job listings from known career pages and exposes them through a REST API. Jobs are persisted using SQLAlchemy so any database supported by the library can be used.
 
 ## Setup
 
@@ -19,9 +17,7 @@ python job_aggregator.py &
 python app.py
 ```
 
-The aggregator will fetch jobs on startup and then once per day. Set the
-`JOB_DB_URL` environment variable to change the database location from the
-default `jobs.db` SQLite file.
+The aggregator will fetch jobs on startup and then once per day. Set the `JOB_DB_URL` environment variable to change the database location from the default `jobs.db` SQLite file.
 
 Open your browser to `http://localhost:5000` to view the React front-end.
 
@@ -31,7 +27,4 @@ Use the search box on the page to filter jobs by company name or job title.
 
 ## Hosting on GitHub Pages
 
-You can deploy the React front-end for free using GitHub Pages. A sample
-workflow is provided in `.github/workflows/pages.yml` that runs the scraper
-daily and publishes the `static` directory. Enable GitHub Pages from the
-`gh-pages` branch to make the site publicly accessible.
+You can deploy the React front-end for free using GitHub Pages. A sample workflow is provided in `.github/workflows/pages.yml` that runs the scraper daily and publishes the `static` directory. Enable GitHub Pages from the `gh-pages` branch to make the site publicly accessible.
